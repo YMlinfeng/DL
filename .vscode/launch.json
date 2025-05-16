@@ -1,0 +1,95 @@
+// {
+//     // 自研调试
+//     "version": "0.2.0",
+//     "configurations": [
+//         {
+//             "name": "mzjdebug",
+//             "type": "python",
+//             "request": "attach",
+//             "connect": {
+//                 // "host": "localhost",
+//                 "host": "127.0.0.1",
+//                 "port": 5679,
+//             },
+//         }
+//     ]
+// }
+
+{
+    // 普通vscode无参数调试
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
+
+
+// {
+//     // Use IntelliSense to learn about possible attributes.
+//     // Hover to view descriptions of existing attributes.
+//     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+//     "version": "0.2.0",
+//     "configurations": [
+//         {
+//             "name": "Python: Current File",
+//             "type": "python",
+//             "request": "launch",
+//             "program": "${file}",
+//             "console": "integratedTerminal",
+//             "args": [
+//                 "--validate_path=./output/vaedebug",
+//                 "--batch_size=1",
+//                 "--epochs=10",
+//                 "--lr=2e-4",
+//                 "--num_workers=8",
+//                 "--mid_channels=320",
+//                 "--checkpoint_dir=./checkpoints_vae_debug",
+//                 "--save_interval=2000",
+//                 "--val_interval=4000",
+//                 "--n_vision_words=1024",
+//                 "--model=Cog3DVAE",
+//                 "--mode=train",
+//                 "--general_mode=vae",
+//                 "--input_height=520",
+//                 "--input_width=784",
+//                 "--inp_channels=4",
+//                 "--out_channels=4"
+//             ],
+//             "justMyCode": true
+//         }
+//     ]
+// }
+
+// {
+//     // 多机多卡调试
+//     "version": "0.2.0",
+//     "configurations": [
+//         {
+//             "name": "Python: Current File",
+//             "type": "python",
+//             "request": "launch",
+//             "program": "/mnt/bn/occupancy3d/workspace/lzy/Occ3d/occ/lib/python3.7/site-packages/torch/distributed/launch.py",
+//             "python": "/mnt/bn/occupancy3d/workspace/lzy/Occ3d/occ/bin/python3.7",
+//             // "program": "${file}", // current file
+//             "console": "integratedTerminal",
+//             "args":[
+//                 "--nnodes=1",
+//                 "--nproc_per_node=2",
+//                 "--master_port=8008",
+//                 "--master_addr=127.0.0.1",
+//                 "./tools/train.py",
+//                 // "--is_vis"
+//                 // "--model=DiT-XL/2",
+//                 // "--data-path=./path",
+//             ],
+//             "env": {"CUDA_VISIBLE_DEVICES": "0,1"},
+//         }
+//     ]
+// }
