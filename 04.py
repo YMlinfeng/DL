@@ -30,7 +30,7 @@ zz = torch.exp(x + y)
 before = id(Y)
 Y = Y + X
 id(Y) == before # 之前的Y已经被析构掉了
-Z = torch.zeros_like(Y) #???
+Z = torch.zeros_like(Y) 
 print('id(Z):', id(Z))
 Z[:] = X + Y
 print('id(Z):', id(Z))
