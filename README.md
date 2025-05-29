@@ -1,5 +1,6 @@
 # DL
 Tutorial for deep learning(AIGC)
+助教：[基于O3的Agent](https://poe.com/DL_Agent)
 
 # contents
 
