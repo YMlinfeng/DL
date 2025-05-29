@@ -4,6 +4,8 @@ Tutorial for deep learning(AIGC)
 # contents
 
 ### 1、DL基础——用DL的方法来拟合线性回归模型
+相关文件：
+04.py
 
 ### 2、CNN——图像分类，最简单的CV demo，CV中的hello world
 
