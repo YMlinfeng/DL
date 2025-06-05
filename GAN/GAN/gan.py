@@ -1,3 +1,5 @@
+# https://github.com/eriklindernoren/PyTorch-GAN/blob/master/implementations/gan/gan.py
+
 import argparse
 import os
 import numpy as np
