@@ -10,7 +10,7 @@ class RNN1(nn.Module):
     '''
     输入是空格加单词，输出是单词加空格
     '''
-    def __init__(self, hidden_units=32):
+    def __init__(self, hidden_units=64):
         super().__init__()
         self.hidden_units = hidden_units
         self.linear_a = nn.Linear(hidden_units + EMBEDDING_LENGTH,
@@ -131,7 +131,7 @@ class RNN1(nn.Module):
 
         a = torch.zeros(batch, self.hidden_units, device=device)
         x = torch.zeros(batch, EMBEDDING_LENGTH, device=device)
-        for i in range(10):
+        for i in range(5):
             next_a = self.tanh(self.linear_a(torch.cat((a, x), 1)))
             tmp = self.linear_y(next_a)
             hat_y = F.softmax(tmp, 1)
