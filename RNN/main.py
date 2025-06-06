@@ -51,7 +51,7 @@ def onehot_to_word(arr):
     return out
 
 
-class WordDataset(Dataset):
+class  WordDataset(Dataset):
 
     def __init__(self, words, max_length, is_onehot=True):
         super().__init__()
@@ -70,7 +70,7 @@ class WordDataset(Dataset):
         # print(f"---{word}---")
         word_length = len(word)
         if self.is_onehot:
-            tensor = torch.zeros(self.max_length, EMBEDDING_LENGTH) #（20， 27）
+            tensor = torch.zeros(self.max_length, EMBEDDING_LENGTH) #（21， 27）
             for i in range(self.max_length):
                 if i < word_length:
                     tensor[i][LETTER_MAP[word[i]]] = 1
@@ -109,8 +109,17 @@ def get_dataloader_and_max_length(limit_length=None,
 
 
 test_words = [
-    'apple', 'appll', 'appla', 'apply', 'bear', 'beer', 'berr', 'beee', 'car',
-    'cae', 'cat', 'cac', 'caq', 'query', 'queee', 'queue', 'quest', 'quees'
+    'apple', 'appll', 'appla', 'apply',
+    'bear', 'beer', 'berr', 'beee',
+    'car', 'cae', 'cat', 'cac', 'caq',
+    'query', 'queee', 'queue', 'quest', 'quees',
+
+    # 新增长单词及其近似变体
+    'computer', 'comwuter', 'cmpputer', 'comutper', 'conputer', 'compyter',
+    'elephant', 'elepafnt', 'elpheant', 'elephent', 'elepeont', 'elpphant',
+    'umbrella', 'umbrelaa', 'umberlla', 'umtrella', 'umbreela', 'uwbrelle',
+    'mountain', 'moautein', 'mountifn', 'mountien', 'munntain', 'mofntaen',
+    'language', 'laneauge', 'langagae', 'langugee', 'languaje', 'larguage',
 ]
 # test_words = [
 #     'abcd', 'abce', 'abde',
@@ -119,9 +128,9 @@ test_words = [
 
 def train_rnn1():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    dataloader, max_length = get_dataloader_and_max_length(19) #(20)
+    dataloader, max_length = get_dataloader_and_max_length(20) #(20)
 
-    model = RNN1().to(device)
+    model = RNN1().to(device) #! 输出的是单词可能出现的概率
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     citerion = torch.nn.CrossEntropyLoss()
@@ -131,33 +140,31 @@ def train_rnn1():
 
         model.train()
         loss_sum = 0
-        progress_bar = tqdm(enumerate(dataloader), total=total_batches, desc=f"Epoch {epoch+1}/10", ncols=100)
-        dataset_len = len(dataloader.dataset)
+        progress_bar = tqdm(enumerate(dataloader), total=total_batches, desc=f"Epoch {epoch+1}/10", ncols=130)
 
-        for batch_idx, y in enumerate(dataloader):
-            y = y.to(device) #(B, 20(多少个one-hot), 27（27个字母的one-hot）)
-            ascii_words = onehot_to_word(y[0])
+        for batch_idx, y in progress_bar: # tqdm 会自动调用 update(1)
+            y = y.to(device) #(B, 21(多少个one-hot), 27（27个字母的one-hot）)
             hat_y = model(y)
             n, Tx, _ = hat_y.shape
             hat_y = torch.reshape(hat_y, (n * Tx, -1)) # #(20B, 27)
             y = torch.reshape(y, (n * Tx, -1)) #(20B, 27)
             label_y = torch.argmax(y, 1) 
-            # print(f"--{ascii_words}--")
-            # print(f"--{label_y}--")
-            loss = citerion(hat_y, label_y) # CrossEntropyLoss 期望输入 input 形状是 (N, C)，target 形状是 (N,)
 
+            loss = citerion(hat_y, label_y) # CrossEntropyLoss 期望输入 input 形状是 (N, C)，target 形状是 (N,)
             optimizer.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5) #限制梯度范数最大为 0.5，防止梯度爆炸（RNN 很常见）
             optimizer.step()
 
-            loss_sum += loss
+            loss_sum += loss.item()
+            # 用于在进度条 右侧动态添加额外信息
             progress_bar.set_postfix({
                 "Batch": f"{batch_idx+1}/{total_batches}",
-                "Loss": f"{loss.item():.6f}"
+                "Loss": f"{loss.item():.4f}",
+                "Avg": f"{loss_sum / (batch_idx+1):.4f}"
             })
 
-        print(f'Epoch {epoch}. loss: {loss_sum / dataset_len}')
+        print(f'Epoch {epoch + 1}. loss: {loss_sum / total_batches}')
 
     torch.save(model.state_dict(), 'rnn1.pth')
     return model
