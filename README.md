@@ -40,6 +40,11 @@ Tutorial for deep learning(AIGC)
 
 3. **学习 RNN**
    - 自然语言处理中的“Hello World”
+   - 对应文件夹：RNN
+   - 在这章中主要学到：
+     - 以字母级RNN的概率预测和采样任务为例，理解RNN的原理和数学基础及编程实现
+     - 理解复现一个经典模型的“图示-数学-代码”法
+     - 理解NLP任务中的向量化编程技巧
 
 4. **掌握 Transformer 与 ViT**
    - 深度学习现代架构基础
