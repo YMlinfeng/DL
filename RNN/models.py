@@ -29,7 +29,7 @@ class RNN1(nn.Module):
         output = torch.empty_like(word)
 
         a = torch.zeros(batch, self.hidden_units, device=word.device) #(B（单词数量）, 32)
-        x = torch.zeros(batch, EMBEDDING_LENGTH, device=word.device) #(B, 27)
+        x = torch.zeros(batch, EMBEDDING_LENGTH, device=word.device) #(B, 27) #! 严格来讲，这里应该输入空格的onehot向量
         for i in range(Tx): #(20)
             next_a = self.tanh(self.linear_a(torch.cat((a, x), 1)))
             hat_y = self.linear_y(next_a)
@@ -126,23 +126,26 @@ class RNN1(nn.Module):
 
     @torch.no_grad()
     def sample_word(self, device='cuda:0'):
+        #todo 将其改为向量化编程
         batch = 1
         output = ''
 
         a = torch.zeros(batch, self.hidden_units, device=device)
-        x = torch.zeros(batch, EMBEDDING_LENGTH, device=device)
+        x = torch.zeros(batch, EMBEDDING_LENGTH, device=device) #!这里的输入是空而非空格
         for i in range(5):
             next_a = self.tanh(self.linear_a(torch.cat((a, x), 1)))
             tmp = self.linear_y(next_a)
-            hat_y = F.softmax(tmp, 1)
+            hat_y = F.softmax(tmp, 1) # (B,27)=（1，27）
 
-            np_prob = hat_y[0].detach().cpu().numpy()
+            # np_prob = hat_y[0].detach().cpu().numpy()
+            np_prob = hat_y[0].cpu().numpy()
             letter = np.random.choice(LETTER_LIST, p=np_prob)
             output += letter
 
             if letter == ' ':
                 break
 
+            # 构建下一个字符的onehot向量
             x = torch.zeros(batch, EMBEDDING_LENGTH, device=device)
             x[0][LETTER_MAP[letter]] = 1
             a = next_a

@@ -150,6 +150,7 @@ def train_rnn1():
             y = torch.reshape(y, (n * Tx, -1)) #(20B, 27)
             label_y = torch.argmax(y, 1) 
 
+            # 虽然只写了一次 CrossEntropyLoss(hat_y, label_y)，但 hat_y 的 shape 是 (B*T, 27)，也就是说它实际上是对每一个时间步都进行 softmax + loss 的
             loss = citerion(hat_y, label_y) # CrossEntropyLoss 期望输入 input 形状是 (N, C)，target 形状是 (N,)
             optimizer.zero_grad()
             loss.backward()
@@ -205,7 +206,7 @@ def train_rnn2():
 
 def test_language_model(model, is_onehot=True, device='cuda:0'):
     # _, max_length = get_dataloader_and_max_length(19)
-    _, max_length = get_dataloader_and_max_length(19) #todo
+    _, max_length = get_dataloader_and_max_length(19) 
     if is_onehot:
         test_word = words_to_onehot(test_words, max_length)
     else:
@@ -221,11 +222,11 @@ def sample(model):
     for _ in range(20):
         word = model.sample_word()
         words.append(word)
-    print(*words)
+    print(*words, sep='\n')
 
 
 def rnn1():
-    rnn1 = train_rnn1()
+    # rnn1 = train_rnn1()
 
     state_dict = torch.load('rnn1.pth', map_location='cuda')
     rnn1 = RNN1().to('cuda')
@@ -233,7 +234,7 @@ def rnn1():
 
     rnn1.eval()
     test_language_model(rnn1)
-    # sample(rnn1)
+    sample(rnn1)
 
 
 def rnn2():
