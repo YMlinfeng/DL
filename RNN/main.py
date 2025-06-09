@@ -205,8 +205,7 @@ def train_rnn2():
     return model
 
 def test_language_model(model, is_onehot=True, device='cuda:0'):
-    # _, max_length = get_dataloader_and_max_length(19)
-    _, max_length = get_dataloader_and_max_length(19) 
+    _, max_length = get_dataloader_and_max_length(20) 
     if is_onehot:
         test_word = words_to_onehot(test_words, max_length)
     else:

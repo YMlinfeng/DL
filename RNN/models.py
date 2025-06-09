@@ -8,7 +8,7 @@ from constant import EMBEDDING_LENGTH, LETTER_LIST, LETTER_MAP
 
 class RNN1(nn.Module):
     '''
-    输入是空格加单词，输出是单词加空格
+    输入是空格加单词的张量，输出是单词加空格的张量
     '''
     def __init__(self, hidden_units=64):
         super().__init__()
@@ -81,13 +81,13 @@ class RNN1(nn.Module):
                 [0,0,0,1,0],
             ],
             [
-                # time4
+                # time4: dee
                 # the same
             ],
         ])  # shape [4,3,5]
 
         word_label = torch.tensor([
-            [0, 0, 0],
+            [0, 0, 0], # batch1的最大值的索引（1的索引）
             [1, 1, 1],
             [2, 2, 3],
             [3, 4, 4],
@@ -106,9 +106,10 @@ class RNN1(nn.Module):
         a = torch.zeros(batch, self.hidden_units, device=word.device)
         x = torch.zeros(batch, EMBEDDING_LENGTH, device=word.device) #( B, 27)
         for i in range(Tx): #(20) # B个单词一起算
-            next_a = self.tanh(self.linear_a(torch.cat((a, x), 1))) #(B, 32)
+            next_a = self.tanh(self.linear_a(torch.cat((a, x), 1))) 
             tmp = self.linear_y(next_a) 
             hat_y = F.softmax(tmp, 1) #（B， 27）
+            # word_label[i]为索引为1的的字母的概率
             probs = hat_y[torch.arange(batch), word_label[i]] # shape [batch]，是第i步每个单词的真实字母编号
             # torch.arange(batch) 生成 [0, 1, ..., batch-1]，用于选取 batch 维度的每一行
             # word_label[i] 是一个长度为 batch 的标签数组，比如 [3, 0, 2]。
