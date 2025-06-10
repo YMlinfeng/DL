@@ -155,7 +155,6 @@ class RNN1(nn.Module):
 
 
 class RNN2(torch.nn.Module):
-
     def __init__(self, hidden_units=64, embeding_dim=64, dropout_rate=0.2):
         super().__init__()
         self.drop = nn.Dropout(dropout_rate)
