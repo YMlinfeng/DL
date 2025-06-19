@@ -1,6 +1,3 @@
-当然可以！以下是一个完整的 Markdown 格式的 README 示例，适用于一个名为 **DiT**（Diffusion Transformer）模型的实现仓库，基于 Saining Xie 在 ICCV 2023 上的论文。你可以根据需要进一步修改作者信息、链接或细节。
-
-```markdown
 # DiT - Diffusion Transformer
 
 **Paper**: [DiT: Self-supervised Pretraining for Diffusion Models](https://arxiv.org/abs/2303.16203)  
