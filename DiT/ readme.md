@@ -1,6 +1,6 @@
 # DiT - Diffusion Transformer
 
-**Paper**: [DiT: Self-supervised Pretraining for Diffusion Models](https://arxiv.org/abs/2303.16203)  
+**Paper**: [DiT](https://arxiv.org/abs/2303.16203)  
 **Conference**: ICCV 2023  
 **Author**: Saining Xie et al.
 
