@@ -47,7 +47,7 @@ class SimplifiedAttention(nn.Module):
         qkv = qkv.permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # [B, num_heads, N, head_dim]
         
-        # 简化版注意力计算：省略复杂正则化，直接计算点积
+        # 简化版注意力计算：省略复杂正则化，直接计算点积,so easy!!!
         attn = (q @ k.transpose(-2, -1)) * self.scale
         attn = attn.softmax(dim=-1)
         attn = self.dropout(attn)
