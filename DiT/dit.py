@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from einops import rearrange
 from torch import einsum
+import os
 
 class SpatioTemporalAttention(nn.Module):
     """时空注意力模块"""
