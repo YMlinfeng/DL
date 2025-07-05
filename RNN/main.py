@@ -11,7 +11,7 @@ from constant import EMBEDDING_LENGTH, LETTER_MAP
 from models import RNN1, RNN2
 from read_imdb import read_imdb_vocab, read_imdb_words
 
-def words_to_label_array(words: Tuple[str, Sequence[str]], max_length):
+def words_to_label_array(words, max_length):
     if isinstance(words, str):
         words = [words]
     words = [word + ' ' for word in words]
@@ -24,7 +24,7 @@ def words_to_label_array(words: Tuple[str, Sequence[str]], max_length):
     return tensor
 
 
-def words_to_onehot(words: Tuple[str, Sequence[str]], max_length):
+def words_to_onehot(words, max_length):
     if isinstance(words, str):
         words = [words]
     words = [word + ' ' for word in words]
@@ -324,15 +324,15 @@ def sample(model):
 
 
 def rnn1():
-    rnn1 = train_rnn1()
+    # rnn1 = train_rnn1()
     rnn1 = train_rnn1_ddp()
 
-    state_dict = torch.load('rnn1.pth', map_location='cuda')
+    state_dict = torch.load('rnn1_ddp.pth', map_location='cuda')
     rnn1 = RNN1().to('cuda')
     rnn1.load_state_dict(state_dict)
 
     rnn1.eval()
-    # test_language_model(rnn1)
+    test_language_model(rnn1)
     # sample(rnn1)
 
 
