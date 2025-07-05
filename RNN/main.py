@@ -256,7 +256,7 @@ def train_rnn1_ddp():
     # 仅主进程保存模型
     if rank == 0:
         # 注意：由于模型封装在 DDP 中，保存时需保存 model.module 的 state_dict
-        torch.save(model.module.state_dict(), 'rnn1.pth')
+        torch.save(model.module.state_dict(), 'rnn1_ddp.pth')
     
     # 等待所有进程同步完成后关闭进程组
     dist.barrier()
@@ -325,6 +325,7 @@ def sample(model):
 
 def rnn1():
     rnn1 = train_rnn1()
+    rnn1 = train_rnn1_ddp()
 
     state_dict = torch.load('rnn1.pth', map_location='cuda')
     rnn1 = RNN1().to('cuda')
