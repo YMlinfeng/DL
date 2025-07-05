@@ -1,6 +1,7 @@
 from typing import Sequence, Tuple
-
+import os
 import torch
+import torch.distributed as dist
 from tqdm import tqdm
 from torch.utils.data import DataLoader, Dataset
 import torch.nn as nn
@@ -171,6 +172,104 @@ def train_rnn1():
     return model
 
 
+def train_rnn1_ddp():
+    """
+    使用 Distributed Data Parallel (DDP) 进行多 GPU 并行训练的版本，
+    可替换原来的 train_rnn1。
+    
+    注意：运行此代码时，需要使用 torchrun 或 torch.distributed.launch 启动，
+    并确保环境变量 RANK、WORLD_SIZE、LOCAL_RANK 已正确设置。
+    """
+    # 根据环境变量初始化分布式环境
+    rank = int(os.environ.get("RANK", 0))
+    world_size = int(os.environ.get("WORLD_SIZE", 1))
+    local_rank = int(os.environ.get("LOCAL_RANK", 0))
+    
+    # 设置当前设备（通常为单个 GPU）
+    torch.cuda.set_device(local_rank)
+    device = torch.device("cuda", local_rank)
+    
+    # 初始化进程组
+    dist.init_process_group(backend='nccl', init_method='env://')
+    
+    # 获取原始 dataloader 和最大长度
+    original_dataloader, max_length = get_dataloader_and_max_length(limit_length=20)
+    # 使用 DistributedSampler 确保每个进程处理不同的数据
+    dataset = original_dataloader.dataset
+    sampler = torch.utils.data.distributed.DistributedSampler(dataset, num_replicas=world_size, rank=rank)
+    dataloader = DataLoader(dataset, batch_size=256, num_workers=8, sampler=sampler)
+    
+    # 模型、优化器、损失函数（仅构造和封装到 DDP）
+    model = RNN1().to(device)
+    # 包装成 DistributedDataParallel 模型
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank])
+    
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    criterion = torch.nn.CrossEntropyLoss()
+    
+    total_batches = len(dataloader)
+    num_epochs = 10
+    
+    for epoch in range(num_epochs):
+        model.train()
+        # 每个 epoch 调用 set_epoch 保证数据洗牌不同
+        sampler.set_epoch(epoch)
+        loss_sum = 0
+        
+        # 仅主进程显示进度条
+        if rank == 0:
+            progress_bar = tqdm(enumerate(dataloader), total=total_batches,
+                                desc=f"Epoch {epoch+1}/{num_epochs}", ncols=130)
+        else:
+            progress_bar = enumerate(dataloader)
+        
+        for batch_idx, y in progress_bar:
+            y = y.to(device)  # shape: (B, max_length, EMBEDDING_LENGTH)
+            hat_y = model(y)
+            n, Tx, _ = hat_y.shape
+            # 将 (B, Tx, 27) reshape 成 (B*Tx, 27)
+            hat_y = hat_y.reshape(n * Tx, -1)
+            # 同时将目标张量 reshape
+            y = y.reshape(n * Tx, -1)
+            # 得到每个时间步的 label (注意：每个 one-hot 只有一个为 1)
+            label_y = torch.argmax(y, dim=1)
+            
+            loss = criterion(hat_y, label_y)
+            optimizer.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
+            optimizer.step()
+            
+            loss_sum += loss.item()
+            
+            # 主进程更新进度条显示信息
+            if rank == 0:
+                progress_bar.set_postfix({
+                    "Batch": f"{batch_idx+1}/{total_batches}",
+                    "Loss": f"{loss.item():.4f}",
+                    "Avg": f"{loss_sum / (batch_idx + 1):.4f}"
+                })
+        
+        if rank == 0:
+            print(f'Epoch {epoch + 1}. Average loss: {loss_sum / total_batches:.4f}')
+    
+    # 仅主进程保存模型
+    if rank == 0:
+        # 注意：由于模型封装在 DDP 中，保存时需保存 model.module 的 state_dict
+        torch.save(model.module.state_dict(), 'rnn1.pth')
+    
+    # 等待所有进程同步完成后关闭进程组
+    dist.barrier()
+    dist.destroy_process_group()
+    
+    # 仅返回主进程的模型，其他进程返回 None
+    if rank == 0:
+        return model.module
+    else:
+        return None
+
+
+
 def train_rnn2():
     device = 'cuda:0'
     dataloader, max_length = get_dataloader_and_max_length(19, is_onehot=False)
@@ -225,15 +324,15 @@ def sample(model):
 
 
 def rnn1():
-    # rnn1 = train_rnn1()
+    rnn1 = train_rnn1()
 
     state_dict = torch.load('rnn1.pth', map_location='cuda')
     rnn1 = RNN1().to('cuda')
     rnn1.load_state_dict(state_dict)
 
     rnn1.eval()
-    test_language_model(rnn1)
-    sample(rnn1)
+    # test_language_model(rnn1)
+    # sample(rnn1)
 
 
 def rnn2():
