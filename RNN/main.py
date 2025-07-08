@@ -333,7 +333,7 @@ def rnn1():
 
     rnn1.eval()
     test_language_model(rnn1)
-    sample(rnn1)
+    # sample(rnn1)
 
 
 def rnn2():
