@@ -73,7 +73,7 @@ class MLP(nn.Module):
         x = self.dropout(x)
         return x
 
-class SiTBlock(nn.Module):
+class SiTBlock(nn.Module): #todo
     def __init__(self, dim, num_heads, mlp_ratio=4.0, dropout=0.1):
         super().__init__()
         self.norm1 = nn.LayerNorm(dim)
