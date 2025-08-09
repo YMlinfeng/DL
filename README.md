@@ -78,6 +78,8 @@ Tutorial for deep learning(AIGC)
 13. **研究 SD3 与 FLUX**
     - 理解 Flow Matching 方法
 
+todo：
+[] Agent Planning
 ---
 
 ## 🎯 结语
