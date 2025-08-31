@@ -14,6 +14,7 @@ Tutorial for deep learning(AIGC)
 
 - 线性代数  
 - 概率论
+- 离散数学
 
 ---
 
