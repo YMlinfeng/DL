@@ -81,6 +81,7 @@ Tutorial for deep learning(AIGC)
 
 ### todo list
 1、 Agent Planning
+2、理论推导
 ---
 
 ## 🎯 结语
