@@ -80,8 +80,9 @@ Tutorial for deep learning(AIGC)
     - 理解 Flow Matching 方法
 
 ### todo list
-1、 Agent Planning
-2、Flow Matching理论推导
+
+1、 Agent Planning  \\ 
+2、 Flow Matching理论推导
 ---
 
 ##  结语
