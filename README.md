@@ -81,8 +81,10 @@ Tutorial for deep learning(AIGC)
 
 ### todo list
 
-1、 Agent Planning  \ 
+1、 Agent Planning   
+
 2、 Flow Matching理论推导
+
 ---
 
 ##  结语
