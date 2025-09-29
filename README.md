@@ -42,7 +42,7 @@ Tutorial for deep learning(AIGC)
 3. **学习 RNN**
    - 自然语言处理中的“Hello World”
    - 视频教程：[RNN 教程](https://www.bilibili.com/video/BV1Y4411b7Xs?p=1)
-   - 对应文件夹：RNN
+   - 对应文件夹：RNN ohhana
    - 在这章中主要学到：
      - 以字母级RNN的概率预测和采样任务为例，理解RNN的原理和数学基础及编程实现
      - 理解复现一个经典模型的“图示-数学-代码”法
