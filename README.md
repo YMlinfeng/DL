@@ -4,7 +4,7 @@ Tutorial for deep learning(AIGC)
 
 # contents
 
-# 🚀 AIGC 快速入门学习路线图
+# AIGC 快速入门学习路线图
 
 下面提供一条**最快入门 AI 中最火爆分支——AIGC** 领域的学习路线，让你以最快速度进入该领域的科研实践！
 
