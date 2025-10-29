@@ -1,6 +1,6 @@
 # DL
 Tutorial for deep learning(AIGC)
-助教(仅供内测)：[基于O3的Agent](https://poe.com/DL_Agent)
+助教(内测)：[基于O3的Agent](https://poe.com/DL_Agent)
 
 # contents
 
