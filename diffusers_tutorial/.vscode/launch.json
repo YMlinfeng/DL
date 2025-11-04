@@ -1,0 +1,33 @@
+{
+  // .vscode/launch.json
+  // 适用于 VS Code 的调试配置，能直接调试当前活动的 Python 文件
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // 配置名称，将显示在调试面板的下拉框
+      "name": "Python: 当前文件",
+      // 调试器类型（由 Python 扩展提供）
+      "type": "python",
+      // 请求类型：launch 表示启动新进程
+      "request": "launch",
+      // 入口脚本，这里使用 VS Code 变量 ${file} 表示当前活动编辑器的文件
+      "program": "${file}",
+      // 调试时传给脚本的参数，可按需填写或留空
+      // "args": ["--arg1", "value"],
+      // Python 解释器路径，默认使用工作区设置，也可显式指定
+      // "python": "/usr/bin/python3",
+      // 启动调试控制台：integratedTerminal / externalTerminal / none
+      "console": "integratedTerminal",
+      // 是否在用户代码暂停；设为 false 时可调试依赖库
+      "justMyCode": true,
+      // 调试时环境变量（可选）
+      /*
+      "env": {
+        "CUDA_VISIBLE_DEVICES": "0"
+      },
+      */
+      // 调试前自动保存文件
+      "saveBeforeRun": "all"
+    }
+  ]
+}
