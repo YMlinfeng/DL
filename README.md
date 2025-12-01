@@ -95,5 +95,7 @@ Tutorial for deep learning(AIGC)
 加油，未来的 AI 科研达人！🔥
 
 
-##  参考资料
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=YMlinfeng/DL&type=date&legend=top-left)](https://www.star-history.com/#YMlinfeng/DL&type=date&legend=top-left)
 
